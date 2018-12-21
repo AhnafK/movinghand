@@ -11,9 +11,9 @@
   returns the file descriptor for the upstream pipe.
   =========================*/
 int server_handshake(int *to_client) {
-  printf("started server\n");
+  printf("SERVER: started server\n");
   int fifO = mkfifo("mario", 0644);
-  printf("created " );
+  printf("SERVER: created " );
   int wkp = open("mario", O_RDONLY);
   printf("and opened well known pipe\n");
   //if(fifO == -1){
@@ -22,11 +22,19 @@ int server_handshake(int *to_client) {
   //}
   char buffer[HANDSHAKE_BUFFER_SIZE];
   read(wkp, buffer, HANDSHAKE_BUFFER_SIZE);
-  printf("recieved %s\n", buffer);
+  printf("SERVER: recieved \"%s\"\n", buffer);
   int pp = open(buffer,O_WRONLY);
+  printf("SERVER: opened pp");
   printf("%s",buffer);
   char sresp[HANDSHAKE_BUFFER_SIZE] = "SERVER";
   write(pp, sresp, HANDSHAKE_BUFFER_SIZE);
+  char big_buff[BUFFER_SIZE];
+  while(strcmp(big_buff,'exit')){
+    read(wkp, big_buff, BUFFER_SIZE);
+    printf("SERVER: recieved \"%s", big_buff);
+    sresp = strcat(strcat("ban",big_buff), "ana");
+    write(pp,sresp,BUFFER_SIZE);
+  }
   close(wkp);
   close(pp);
   printf("done\n");
